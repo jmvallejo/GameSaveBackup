@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import { readFiles, copyFiles } from './files'
 
-const backupGame = fileList => {
+const restoreGame = fileList => {
   if (!fileList || !fileList.length) {
     console.error(`No files have been specified for ${gameName}`)
     return false
@@ -22,20 +22,20 @@ const backupGame = fileList => {
       continue
     }
     // Copy files
-    const foundFiles = readFiles(sourcePath)
-    copyFiles(foundFiles, sourcePath, destPath)
+    const foundFiles = readFiles(destPath)
+    copyFiles(foundFiles, destPath, sourcePath)
   }
 }
 
-export const backupAll = config => {
+export const restoreAll = config => {
   if (!config) {
-    console.error('Invalid config, could not backup')
+    console.error('Invalid config, could not restore')
     return false
   }
 
   const { games } = config
   if (!games) {
-    console.error('No games present in config file, no backups were created')
+    console.error('No games present in config file, nothing to restore')
     return false
   }
 
@@ -46,8 +46,8 @@ export const backupAll = config => {
       console.log(`Ignoring ${gameName}...`)
       continue
     }
-    console.log(`Backing up ${gameName}...`)
-    backupGame(fileList)
+    console.log(`Restoring ${gameName}...`)
+    restoreGame(fileList)
   }
   return true
 }

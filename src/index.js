@@ -3,6 +3,7 @@ import path from 'path'
 import moment from 'moment'
 import { checkConfig, loadConfig } from './lib/config'
 import { backupAll } from './lib/backup'
+import { restoreAll } from './lib/restore'
 
 const formatTime = () => {
   return moment().format('h:mm a')
@@ -23,11 +24,16 @@ const buildMenu = infoText => {
       label: 'Backup all',
       click: () => {
         const config = loadConfig()
-        backupAll(config) &&
-          buildMenu(`Backed up all at ${formatTime()}`)
+        backupAll(config) && buildMenu(`Backed up all at ${formatTime()}`)
       }
     },
-    { label: 'Restore all' },
+    {
+      label: 'Restore all',
+      click: () => {
+        const config = loadConfig()
+        restoreAll(config) && buildMenu(`Restored all at ${formatTime()}`)
+      }
+    },
     { type: 'separator' },
     { label: 'Quit', click: () => app.quit() }
   ])
