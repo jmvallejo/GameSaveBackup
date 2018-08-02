@@ -2,19 +2,21 @@
   "name": "GameSaveBackup",
   "version": "0.0.1",
   "description": "A small customizable utility for backing up game saves",
-  "main": "src/index.js",
+  "main": "build/index.js",
   "repository": "https://github.com/jmvallejo/GameSaveBackup.git",
   "author": "Juan Manuel Vallejo <jmvallejo@gmail.com>",
   "license": "MIT",
   "scripts": {
     "build": "babel src -d build",
-    "start": "babel src -d build&&electron build/index.js"
+    "start": "babel src -d build&&electron build/index.js",
+    "dist": "babel src -d build&&electron-builder"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-2": "^6.24.1",
-    "electron": "^2.0.6"
+    "electron": "^2.0.6",
+    "electron-builder": "^20.26.1"
   },
   "dependencies": {
     "fs-extra": "^7.0.0",

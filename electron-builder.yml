@@ -1,0 +1,10 @@
+appId: "com.gamesavebackup.app"
+productName: "GameSaveBackup"
+copyright: "Copyright © year ${author}"
+directories:
+  buildResources: "build-resources"
+  output: "dist"
+files: ["build/**/*", "img/**/*", "!.git*"]
+nsis:
+  license: "LICENSE"
+  deleteAppDataOnUninstall: true
