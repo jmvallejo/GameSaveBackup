@@ -28,3 +28,33 @@ export const readFiles = (basePath, subdir = null) => {
 
   return foundFiles
 }
+
+export const copyFiles = (foundFiles, sourcePath, destPath) => {
+  console.log('Copying files', foundFiles)
+  for (
+    let j = 0, foundFilesLength = foundFiles.length, currentFileInfo;
+    j < foundFilesLength;
+    j++
+  ) {
+    currentFileInfo = foundFiles[j]
+    const { fileName, subdir } = currentFileInfo || {}
+    if (!fileName) {
+      continue
+    }
+    if (subdir) {
+      fs.ensureDirSync(path.join(destPath, subdir))
+    }
+    const fileSourcePath = subdir ? path.join(sourcePath, subdir) : sourcePath
+    const fileDestPath = subdir ? path.join(destPath, subdir) : destPath
+    fs.copyFileSync(
+      path.join(fileSourcePath, fileName),
+      path.join(fileDestPath, fileName)
+    )
+    console.log(
+      `Copied ${path.join(fileSourcePath, fileName)} to ${path.join(
+        fileDestPath,
+        fileName
+      )}`
+    )
+  }
+}
