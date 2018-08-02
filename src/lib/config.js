@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { shell } from 'electron'
+import { shell, app } from 'electron'
 
 const SAMPLE_CONFIG = {
   games: {
@@ -17,7 +17,7 @@ const SAMPLE_CONFIG = {
   }
 }
 
-const CONFIG_DIRECTORY = path.join(__dirname, '..', 'config')
+const CONFIG_DIRECTORY = path.join(app.getPath('appData'), app.getName(), 'config')
 const CONFIG_FILE_NAME = 'config.json'
 const CONFIG_FILE_OPTIONS = {
   spaces: 2
