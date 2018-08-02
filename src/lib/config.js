@@ -1,5 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
+import { shell } from 'electron'
 
 const SAMPLE_CONFIG = {
   games: {
@@ -53,4 +54,8 @@ export const getConfig = () => {
   } else {
     return {}
   }
+}
+
+export const showConfigFile = () => {
+  shell.showItemInFolder(path.join(CONFIG_DIRECTORY, CONFIG_FILE_NAME))
 }

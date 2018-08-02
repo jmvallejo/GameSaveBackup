@@ -1,7 +1,7 @@
 import { app, Menu, Tray } from 'electron'
 import path from 'path'
 import moment from 'moment'
-import { checkConfig, loadConfig } from './lib/config'
+import { checkConfig, loadConfig, showConfigFile } from './lib/config'
 import { backupAll } from './lib/backup'
 import { restoreAll } from './lib/restore'
 
@@ -33,6 +33,11 @@ const buildMenu = infoText => {
         const config = loadConfig()
         restoreAll(config) && buildMenu(`Restored all at ${formatTime()}`)
       }
+    },
+    { type: 'separator' },
+    {
+      label: 'Show config file',
+      click: () => showConfigFile()
     },
     { type: 'separator' },
     { label: 'Quit', click: () => app.quit() }
