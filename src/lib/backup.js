@@ -50,13 +50,13 @@ const backupGame = fileList => {
 export const backupAll = config => {
   if (!config) {
     console.error('Invalid config, could not backup')
-    return
+    return false
   }
 
   const { games } = config
   if (!games) {
     console.error('No games present in config file, no backups were created')
-    return
+    return false
   }
 
   for (let gameName in games) {
@@ -69,4 +69,5 @@ export const backupAll = config => {
     console.log(`Backing up ${gameName}...`)
     backupGame(fileList)
   }
+  return true
 }
