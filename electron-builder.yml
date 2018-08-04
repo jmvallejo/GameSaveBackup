@@ -4,7 +4,7 @@ copyright: "Copyright © year ${author}"
 directories:
   buildResources: "build-resources"
   output: "dist"
-files: ["build/**/*", "img/**/*", "!.git*"]
+files: ["build/**/*", "img/**/*", "build-resources/icon.*", "build-resources/iconTemplate*", "!.git*"]
 nsis:
   license: "LICENSE"
   deleteAppDataOnUninstall: true
