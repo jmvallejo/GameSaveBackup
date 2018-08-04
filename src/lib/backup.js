@@ -22,7 +22,7 @@ const backupGame = fileList => {
       continue
     }
     // Copy files
-    const foundFiles = readFiles(sourcePath)
+    const foundFiles = readFiles({ basePath: sourcePath, filePatterns: files })
     copyFiles(foundFiles, sourcePath, destPath)
   }
 }

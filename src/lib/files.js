@@ -1,8 +1,11 @@
 import fs from 'fs-extra'
 import path from 'path'
+import multimatch from 'multimatch'
 
-export const readFiles = (basePath, subdir = null) => {
-  const files = fs.readdirSync(basePath)
+export const readFiles = ({ basePath, subdir, filePatterns }) => {
+  filePatterns = filePatterns || ['*']
+  const allFiles = fs.readdirSync(basePath)
+  const files = multimatch(allFiles, filePatterns)
   const foundFiles = []
 
   for (let i = 0; i < files.length; i++) {
@@ -12,7 +15,11 @@ export const readFiles = (basePath, subdir = null) => {
       const currentSubdir = subdir
         ? path.join(subdir, currentFile.replace(/^.*[\\\/]/, ''))
         : currentFile.replace(/^.*[\\\/]/, '')
-      const subDirFoundFiles = readFiles(currentFile, currentSubdir)
+      const subDirFoundFiles = readFiles({
+        basePath: currentFile,
+        subdir: currentSubdir,
+        filePatterns
+      })
       if (subDirFoundFiles && subDirFoundFiles.length > 0) {
         for (let j = 0; j < subDirFoundFiles.length; j++) {
           foundFiles.push(subDirFoundFiles[j])
@@ -51,10 +58,7 @@ export const copyFiles = (foundFiles, sourcePath, destPath) => {
       path.join(fileDestPath, fileName)
     )
     console.log(
-      `Copied ${path.join(fileSourcePath, fileName)} to ${path.join(
-        fileDestPath,
-        fileName
-      )}`
+      `Copied ${path.join(fileSourcePath, fileName)} to ${path.join(fileDestPath, fileName)}`
     )
   }
 }

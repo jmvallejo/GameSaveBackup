@@ -53,5 +53,4 @@ app.once('ready', () => {
 
   // Check that config file exists
   checkConfig()
-  loadConfig()
 })
