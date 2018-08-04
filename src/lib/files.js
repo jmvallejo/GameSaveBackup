@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import multimatch from 'multimatch'
+import moment from 'moment'
 
 export const readFiles = ({ basePath, subdir, filePatterns }) => {
   filePatterns = filePatterns || ['*']
@@ -35,6 +36,29 @@ export const readFiles = ({ basePath, subdir, filePatterns }) => {
 
   return foundFiles
 }
+/**
+ * Returns true if file1 is more recent than file2
+ *
+ * @param {String} file1
+ * @param {String} file2
+ */
+const isMoreRecent = (file1, file2) => {
+  if (!file1 || !file2) {
+    return false
+  }
+
+  const file1Stat = fs.existsSync(file1) && fs.statSync(file1)
+  const file2Stat = fs.existsSync(file2) && fs.statSync(file2)
+  if (!file1Stat) {
+    return false
+  }
+  if (!file2Stat) {
+    return true
+  }
+  const file1mdate = file1Stat.mtime
+  const file2mdate = file2Stat.mtime
+  return moment(file1mdate).isAfter(file2mdate)
+}
 
 export const copyFiles = (foundFiles, sourcePath, destPath) => {
   console.log('Copying files', foundFiles)
@@ -51,14 +75,18 @@ export const copyFiles = (foundFiles, sourcePath, destPath) => {
     if (subdir) {
       fs.ensureDirSync(path.join(destPath, subdir))
     }
-    const fileSourcePath = subdir ? path.join(sourcePath, subdir) : sourcePath
-    const fileDestPath = subdir ? path.join(destPath, subdir) : destPath
-    fs.copyFileSync(
-      path.join(fileSourcePath, fileName),
-      path.join(fileDestPath, fileName)
-    )
-    console.log(
-      `Copied ${path.join(fileSourcePath, fileName)} to ${path.join(fileDestPath, fileName)}`
-    )
+    const fileSourcePath = subdir
+      ? path.join(sourcePath, subdir, fileName)
+      : path.join(sourcePath, fileName)
+    const fileDestPath = subdir
+      ? path.join(destPath, subdir, fileName)
+      : path.join(destPath, fileName)
+
+    if (isMoreRecent(fileSourcePath, fileDestPath)) {
+      fs.copyFileSync(fileSourcePath, fileDestPath)
+      console.log(`Copied ${fileSourcePath} to ${fileDestPath}`)
+    } else {
+      console.log(`Skipping ${fileSourcePath}`)
+    }
   }
 }
