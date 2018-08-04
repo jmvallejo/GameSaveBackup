@@ -23,7 +23,7 @@ const restoreGame = fileList => {
     }
     // Copy files
     const foundFiles = readFiles({ basePath: destPath, filePatterns: files })
-    copyFiles(foundFiles, destPath, sourcePath)
+    copyFiles(foundFiles, destPath, sourcePath, true)
   }
 }
 

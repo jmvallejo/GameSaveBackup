@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import multimatch from 'multimatch'
 import moment from 'moment'
+import { dialog, app } from 'electron'
 
 export const readFiles = ({ basePath, subdir, filePatterns }) => {
   filePatterns = filePatterns || ['*']
@@ -60,7 +61,7 @@ const isMoreRecent = (file1, file2) => {
   return moment(file1mdate).isAfter(file2mdate)
 }
 
-export const copyFiles = (foundFiles, sourcePath, destPath) => {
+export const copyFiles = (foundFiles, sourcePath, destPath, prompt = false) => {
   console.log('Copying files', foundFiles)
   for (
     let j = 0, foundFilesLength = foundFiles.length, currentFileInfo;
@@ -85,6 +86,20 @@ export const copyFiles = (foundFiles, sourcePath, destPath) => {
     if (isMoreRecent(fileSourcePath, fileDestPath)) {
       fs.copyFileSync(fileSourcePath, fileDestPath)
       console.log(`Copied ${fileSourcePath} to ${fileDestPath}`)
+    } else if(prompt) {
+      dialog.showMessageBox(null, {
+        type: 'question',
+        buttons: ['Yes', 'Cancel'],
+        defaultId: 1,
+        title: app.getName(),
+        detail: `${fileDestPath} is more recent than ${fileSourcePath}, do you want to overwrite it?`,
+        cancelId: 1
+      }, response => {
+        if (response === 0) {
+          fs.copyFileSync(fileSourcePath, fileDestPath)
+          console.log(`Copied ${fileSourcePath} to ${fileDestPath}`)
+        }
+      })
     } else {
       console.log(`Skipping ${fileSourcePath}`)
     }
