@@ -1,4 +1,4 @@
-import { app, Menu, Tray } from 'electron'
+import { app, Menu, Tray, shell } from 'electron'
 import path from 'path'
 import moment from 'moment'
 import {
@@ -6,7 +6,8 @@ import {
   loadConfig,
   showConfigFile,
   isStartedAtLogin,
-  toggleStartAtLogin
+  toggleStartAtLogin,
+  getGames
 } from './lib/config'
 import { backupAll } from './lib/backup'
 import { restoreAll } from './lib/restore'
@@ -24,6 +25,43 @@ const buildMenu = infoText => {
       { type: 'separator' }
     ]
   }
+
+  // Build games menu
+  let gamesMenu = []
+  const games = getGames()
+  if (games) {
+    const gameList = []
+    for (let gameName in games) {
+      const currentGame = games[gameName]
+      const { fileList } = currentGame
+      const submenu = [
+        {
+          label: 'Show save folder',
+          click: () => {
+            for (let i = 0; i < fileList.length; i++) {
+              const sourcePath = fileList[i].sourcePath
+              sourcePath && shell.showItemInFolder(sourcePath)
+            }
+          }
+        },
+        {
+          label: 'Show backup folder',
+          click: () => {
+            for (let i = 0; i < fileList.length; i++) {
+              const destPath = fileList[i].destPath
+              destPath && shell.showItemInFolder(destPath)
+            }
+          }
+        }
+      ]
+      gameList.push({
+        label: gameName,
+        submenu
+      })
+    }
+    gamesMenu = [{ label: 'Games', submenu: gameList }, { type: 'separator' }]
+  }
+
   const contextMenu = Menu.buildFromTemplate([
     ...infoLabelItems,
     {
@@ -41,6 +79,7 @@ const buildMenu = infoText => {
       }
     },
     { type: 'separator' },
+    ...gamesMenu,
     {
       label: 'Show config file',
       click: () => showConfigFile()
@@ -64,8 +103,9 @@ app.once('ready', () => {
   const iconPath = path.join(__dirname, '..', 'img', 'iconTemplate.png')
   tray = new Tray(iconPath)
   tray.setToolTip('Game Save Backup')
-  buildMenu()
 
   // Check that config file exists
   checkConfig()
+  // Build tray menu
+  buildMenu()
 })

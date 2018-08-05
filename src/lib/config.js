@@ -51,7 +51,9 @@ export const checkConfig = () => {
     if (
       config &&
       config.games &&
-      !deepEqual(config.games.SampleGameTitle, SampleGameTitle, { strict: true })
+      !deepEqual(config.games.SampleGameTitle, SampleGameTitle, {
+        strict: true
+      })
     ) {
       config.games.SampleGameTitle = { ...SampleGameTitle }
       saveConfig()
@@ -85,6 +87,25 @@ export const getConfig = () => {
   } else {
     return {}
   }
+}
+
+export const getGames = () => {
+  const config = getConfig()
+  if (!config || !config.games) {
+    return null
+  }
+  const games = {}
+  for (let gameName in config.games) {
+    const currentGame = config.games[gameName]
+    if (currentGame.ignore) {
+      continue
+    }
+    games[gameName] = { ...currentGame }
+  }
+  if (Object.keys(games).length === 0) {
+    return null
+  }
+  return games
 }
 
 export const showConfigFile = () => {
