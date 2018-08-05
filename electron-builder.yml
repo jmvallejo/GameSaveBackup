@@ -8,3 +8,5 @@ files: ["build/**/*", "img/**/*", "build-resources/icon.*", "build-resources/ico
 nsis:
   license: "LICENSE"
   deleteAppDataOnUninstall: true
+win:
+  publish: ["github"]

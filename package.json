@@ -9,7 +9,8 @@
   "scripts": {
     "build": "babel src -d build",
     "start": "babel src -d build&&electron build/index.js",
-    "dist": "babel src -d build&&electron-builder"
+    "dist": "babel src -d build&&electron-builder",
+    "release": "babel src -d build&&electron-builder --publish always"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
