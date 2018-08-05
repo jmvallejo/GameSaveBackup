@@ -1,7 +1,13 @@
 import { app, Menu, Tray } from 'electron'
 import path from 'path'
 import moment from 'moment'
-import { checkConfig, loadConfig, showConfigFile } from './lib/config'
+import {
+  checkConfig,
+  loadConfig,
+  showConfigFile,
+  isStartedAtLogin,
+  toggleStartAtLogin
+} from './lib/config'
 import { backupAll } from './lib/backup'
 import { restoreAll } from './lib/restore'
 
@@ -38,6 +44,15 @@ const buildMenu = infoText => {
     {
       label: 'Show config file',
       click: () => showConfigFile()
+    },
+    {
+      label: 'Start at login',
+      type: 'checkbox',
+      checked: isStartedAtLogin(),
+      click: () => {
+        toggleStartAtLogin()
+        buildMenu()
+      }
     },
     { type: 'separator' },
     { label: 'Quit', click: () => app.quit() }

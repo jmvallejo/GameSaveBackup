@@ -90,3 +90,25 @@ export const getConfig = () => {
 export const showConfigFile = () => {
   shell.showItemInFolder(path.join(CONFIG_DIRECTORY, CONFIG_FILE_NAME))
 }
+
+/**
+ * Returns true if application is set to start on login
+ *
+ * @returns {Boolean}
+ */
+export const isStartedAtLogin = () => {
+  const options = app.getLoginItemSettings()
+  const { openAtLogin } = options
+  return openAtLogin
+}
+/**
+ * Toggles setting to start app on login
+ *
+ * @returns {Boolean}
+ */
+export const toggleStartAtLogin = () => {
+  const options = app.getLoginItemSettings()
+  const { openAtLogin } = options
+  app.setLoginItemSettings({ openAtLogin: !openAtLogin })
+  return !openAtLogin
+}
