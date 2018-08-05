@@ -85,6 +85,13 @@ const buildMenu = infoText => {
       click: () => showConfigFile()
     },
     {
+      label: 'Reload config',
+      click: () => {
+        loadConfig()
+        buildMenu()
+      }
+    },
+    {
       label: 'Start at login',
       type: 'checkbox',
       checked: isStartedAtLogin(),
