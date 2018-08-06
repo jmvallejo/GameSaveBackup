@@ -137,6 +137,9 @@ const checkUpdate = () => {
     updateReady = true
     buildMenu('Update is ready')
   })
+  autoUpdater.on('error', () => {
+    buildMenu('Error downloading update')
+  })
   autoUpdater.checkForUpdates()
 }
 
