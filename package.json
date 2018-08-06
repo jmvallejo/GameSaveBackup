@@ -1,6 +1,6 @@
 {
   "name": "GameSaveBackup",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A small customizable utility for backing up game saves",
   "main": "build/index.js",
   "repository": "https://github.com/jmvallejo/GameSaveBackup.git",

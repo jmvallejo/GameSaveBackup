@@ -10,3 +10,7 @@ nsis:
   deleteAppDataOnUninstall: true
 win:
   publish: ["github"]
+publish:
+  provider: "github"
+  owner: "jmvallejo"
+  repo: "GameSaveBackup"

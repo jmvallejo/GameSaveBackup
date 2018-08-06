@@ -1,4 +1,4 @@
-import { app, Menu, Tray, shell } from 'electron'
+import { app, Menu, Tray, shell, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import path from 'path'
 import moment from 'moment'
@@ -17,13 +17,23 @@ const formatTime = () => {
   return moment().format('h:mm a')
 }
 
+const alert = message => {
+  dialog.showMessageBox(null, {
+    type: 'info',
+    buttons: [],
+    title: app.getName(),
+    message
+  })
+}
+
 let tray = null
+let updateReady = false
 const buildMenu = infoText => {
   let infoLabelItems = []
   if (infoText) {
     infoLabelItems = [
-      { label: infoText, enabled: false },
-      { type: 'separator' }
+      { type: 'separator' },
+      { label: infoText, enabled: false }
     ]
   }
 
@@ -63,8 +73,13 @@ const buildMenu = infoText => {
     gamesMenu = [{ label: 'Games', submenu: gameList }, { type: 'separator' }]
   }
 
+  const quitElement = updateReady
+    ? { label: 'Restart and update', click: () => autoUpdater.quitAndInstall(true, true) }
+    : { label: 'Quit', click: () => app.quit() }
+
   const contextMenu = Menu.buildFromTemplate([
-    ...infoLabelItems,
+    { label: `GameSaveBackup v${app.getVersion()}`, enabled: false },
+    { type: 'separator' },
     {
       label: 'Backup all',
       click: () => {
@@ -102,9 +117,27 @@ const buildMenu = infoText => {
       }
     },
     { type: 'separator' },
-    { label: 'Quit', click: () => app.quit() }
+    quitElement,
+    ...infoLabelItems
   ])
   tray.setContextMenu(contextMenu)
+}
+
+const checkUpdate = () => {
+  autoUpdater.on('checking-for-update', () => {
+    buildMenu('Checking for updates')
+  })
+  autoUpdater.on('update-available', () => {
+    buildMenu('Downloading update...')
+  })
+  autoUpdater.on('update-not-available', () => {
+    buildMenu()
+  })
+  autoUpdater.on('update-downloaded', () => {
+    updateReady = true
+    buildMenu('Update is ready')
+  })
+  autoUpdater.checkForUpdates()
 }
 
 app.once('ready', () => {
@@ -116,6 +149,7 @@ app.once('ready', () => {
   checkConfig()
   // Build tray menu
   buildMenu()
+
   // Check for updates
-  autoUpdater.checkForUpdatesAndNotify()
+  checkUpdate()
 })
