@@ -1,6 +1,6 @@
 {
   "name": "GameSaveBackup",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A small customizable utility for backing up game saves",
   "main": "build/index.js",
   "repository": "https://github.com/jmvallejo/GameSaveBackup.git",
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "deep-equal": "^1.0.1",
+    "electron-updater": "^3.0.3",
     "fs-extra": "^7.0.0",
     "moment": "^2.22.2",
     "multimatch": "^2.1.0"

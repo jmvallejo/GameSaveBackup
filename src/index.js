@@ -1,4 +1,5 @@
 import { app, Menu, Tray, shell } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import path from 'path'
 import moment from 'moment'
 import {
@@ -115,4 +116,6 @@ app.once('ready', () => {
   checkConfig()
   // Build tray menu
   buildMenu()
+  // Check for updates
+  autoUpdater.checkForUpdatesAndNotify()
 })
