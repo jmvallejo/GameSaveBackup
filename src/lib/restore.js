@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import { readFiles, copyFiles } from './files'
 
-const restoreGame = fileList => {
+const restoreGame = (fileList, prompt = true) => {
   if (!fileList || !fileList.length) {
     console.error(`No files have been specified for ${gameName}`)
     return false
@@ -23,7 +23,7 @@ const restoreGame = fileList => {
     }
     // Copy files
     const foundFiles = readFiles({ basePath: destPath, filePatterns: files })
-    copyFiles(foundFiles, destPath, sourcePath, true)
+    copyFiles(foundFiles, destPath, sourcePath, prompt)
   }
 }
 
@@ -47,7 +47,7 @@ export const restoreAll = config => {
       continue
     }
     console.log(`Restoring ${gameName}...`)
-    restoreGame(fileList)
+    restoreGame(fileList, true)
   }
   return true
 }

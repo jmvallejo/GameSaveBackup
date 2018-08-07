@@ -5,6 +5,7 @@ import deepEqual from 'deep-equal'
 
 const SampleGameTitle = {
   ignore: true,
+  watch: false,
   fileList: [
     {
       sourcePath: 'C:\\path\\to\\your\\save\\folder',

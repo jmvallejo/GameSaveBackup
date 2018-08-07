@@ -8,9 +8,10 @@ import {
   showConfigFile,
   isStartedAtLogin,
   toggleStartAtLogin,
-  getGames
+  getGames,
+  getConfig
 } from './lib/config'
-import { backupAll } from './lib/backup'
+import { backupAll, configureWatch } from './lib/backup'
 import { restoreAll } from './lib/restore'
 
 const formatTime = () => {
@@ -152,6 +153,9 @@ app.once('ready', () => {
   checkConfig()
   // Build tray menu
   buildMenu()
+  // Configure watched folders
+  const config = getConfig()
+  configureWatch(config)
 
   // Check for updates
   checkUpdate()
