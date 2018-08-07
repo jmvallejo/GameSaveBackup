@@ -23,7 +23,7 @@ const backupGame = fileList => {
     }
     // Copy files
     const foundFiles = readFiles({ basePath: sourcePath, filePatterns: files })
-    copyFiles(foundFiles, sourcePath, destPath)
+    copyFiles(foundFiles, sourcePath, destPath, true)
   }
 }
 

@@ -37,6 +37,28 @@ export const readFiles = ({ basePath, subdir, filePatterns }) => {
 
   return foundFiles
 }
+
+/**
+ * Returns true if file1 has the same mdate as file2
+ *
+ * @param {String} file1
+ * @param {String} file2
+ */
+const isSameDate = (file1, file2) => {
+  if (!file1 || !file2) {
+    return false
+  }
+
+  const file1Stat = fs.existsSync(file1) && fs.statSync(file1)
+  const file2Stat = fs.existsSync(file2) && fs.statSync(file2)
+  if (!file1Stat || !file2Stat) {
+    return false
+  }
+  const file1mdate = file1Stat.mtime
+  const file2mdate = file2Stat.mtime
+  return moment(file1mdate).isSame(file2mdate)
+}
+
 /**
  * Returns true if file1 is more recent than file2
  *
@@ -86,6 +108,8 @@ export const copyFiles = (foundFiles, sourcePath, destPath, prompt = false) => {
     if (isMoreRecent(fileSourcePath, fileDestPath)) {
       fs.copyFileSync(fileSourcePath, fileDestPath)
       console.log(`Copied ${fileSourcePath} to ${fileDestPath}`)
+    } else if (isSameDate(fileSourcePath, fileDestPath)) {
+      console.log(`Skipping ${fileSourcePath} because it has the same date`)
     } else if(prompt) {
       dialog.showMessageBox(null, {
         type: 'question',
