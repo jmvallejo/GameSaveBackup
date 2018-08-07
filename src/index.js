@@ -11,8 +11,9 @@ import {
   getGames,
   getConfig
 } from './lib/config'
-import { backupAll, configureWatch } from './lib/backup'
+import { backupAll } from './lib/backup'
 import { restoreAll } from './lib/restore'
+import { configureWatch } from './lib/watch'
 
 const formatTime = () => {
   return moment().format('h:mm a')

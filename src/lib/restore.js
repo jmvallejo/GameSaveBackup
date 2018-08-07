@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import { readFiles, copyFiles } from './files'
 
-const restoreGame = (fileList, prompt = true) => {
+export const restoreGame = (fileList, prompt = true) => {
   if (!fileList || !fileList.length) {
     console.error(`No files have been specified for ${gameName}`)
     return false
