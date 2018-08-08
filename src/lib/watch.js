@@ -29,7 +29,7 @@ const watchGame = (gameName, game) => {
     currentFilesInfo = fileList[i]
     const { sourcePath, destPath } = currentFilesInfo || {}
     if (sourcePath && fs.existsSync(sourcePath)) {
-      fs.watch(sourcePath, (eventType, filename) => {
+      fs.watch(sourcePath, { recursive: true }, (eventType, filename) => {
         console.log(`${gameName}: ${eventType} ${filename}`)
         if (!getBusy()) {
           setBusy()
@@ -37,7 +37,7 @@ const watchGame = (gameName, game) => {
           releaseBusy()
         }
       })
-      fs.watch(destPath, (eventType, filename) => {
+      fs.watch(destPath, { recursive: true }, (eventType, filename) => {
         console.log(`${gameName}: ${eventType} ${filename}`)
         if (!getBusy()) {
           setBusy()
