@@ -2,6 +2,20 @@ import fs from 'fs-extra'
 import { backupGame } from './backup'
 import { restoreGame } from './restore'
 
+const WATCH_BUSY_TIMEOUT = 1000
+let busy = false
+export const getBusy = () => {
+  return busy
+}
+export const setBusy = () => {
+  busy = true
+}
+export const releaseBusy = () => {
+  setTimeout(() => {
+    busy = false
+  }, WATCH_BUSY_TIMEOUT)
+}
+
 const watchGame = (gameName, game) => {
   if (!gameName || !game) {
     return
@@ -17,11 +31,19 @@ const watchGame = (gameName, game) => {
     if (sourcePath && fs.existsSync(sourcePath)) {
       fs.watch(sourcePath, (eventType, filename) => {
         console.log(`${gameName}: ${eventType} ${filename}`)
-        backupGame(fileList, false)
+        if (!getBusy()) {
+          setBusy()
+          backupGame(fileList, false)
+          releaseBusy()
+        }
       })
       fs.watch(destPath, (eventType, filename) => {
         console.log(`${gameName}: ${eventType} ${filename}`)
-        // restoreGame(fileList, false)
+        if (!getBusy()) {
+          setBusy()
+          restoreGame(fileList, false)
+          releaseBusy()
+        }
       })
     }
   }

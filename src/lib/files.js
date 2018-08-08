@@ -49,14 +49,18 @@ const isSameDate = (file1, file2) => {
     return false
   }
 
-  const file1Stat = fs.existsSync(file1) && fs.statSync(file1)
-  const file2Stat = fs.existsSync(file2) && fs.statSync(file2)
-  if (!file1Stat || !file2Stat) {
+  try {
+    const file1Stat = fs.existsSync(file1) && fs.statSync(file1)
+    const file2Stat = fs.existsSync(file2) && fs.statSync(file2)
+    if (!file1Stat || !file2Stat) {
+      return false
+    }
+    const file1mdate = file1Stat.mtime
+    const file2mdate = file2Stat.mtime
+    return moment(file1mdate).isSame(file2mdate)
+  } catch (e) {
     return false
   }
-  const file1mdate = file1Stat.mtime
-  const file2mdate = file2Stat.mtime
-  return moment(file1mdate).isSame(file2mdate)
 }
 
 /**
@@ -70,17 +74,21 @@ const isMoreRecent = (file1, file2) => {
     return false
   }
 
-  const file1Stat = fs.existsSync(file1) && fs.statSync(file1)
-  const file2Stat = fs.existsSync(file2) && fs.statSync(file2)
-  if (!file1Stat) {
+  try {
+    const file1Stat = fs.existsSync(file1) && fs.statSync(file1)
+    const file2Stat = fs.existsSync(file2) && fs.statSync(file2)
+    if (!file1Stat) {
+      return false
+    }
+    if (!file2Stat) {
+      return true
+    }
+    const file1mdate = file1Stat.mtime
+    const file2mdate = file2Stat.mtime
+    return moment(file1mdate).isAfter(file2mdate)
+  } catch (e) {
     return false
   }
-  if (!file2Stat) {
-    return true
-  }
-  const file1mdate = file1Stat.mtime
-  const file2mdate = file2Stat.mtime
-  return moment(file1mdate).isAfter(file2mdate)
 }
 
 export const copyFiles = (foundFiles, sourcePath, destPath, prompt = false) => {
@@ -95,15 +103,18 @@ export const copyFiles = (foundFiles, sourcePath, destPath, prompt = false) => {
     if (!fileName) {
       continue
     }
-    if (subdir) {
-      fs.ensureDirSync(path.join(destPath, subdir))
-    }
     const fileSourcePath = subdir
       ? path.join(sourcePath, subdir, fileName)
       : path.join(sourcePath, fileName)
     const fileDestPath = subdir
       ? path.join(destPath, subdir, fileName)
       : path.join(destPath, fileName)
+    if (!fs.existsSync(fileSourcePath)) {
+      continue
+    }
+    if (subdir) {
+      fs.ensureDirSync(path.join(destPath, subdir))
+    }
 
     if (isMoreRecent(fileSourcePath, fileDestPath)) {
       fs.copyFileSync(fileSourcePath, fileDestPath)

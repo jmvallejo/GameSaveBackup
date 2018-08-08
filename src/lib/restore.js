@@ -1,5 +1,6 @@
 import fs from 'fs-extra'
 import { readFiles, copyFiles } from './files'
+import { getBusy, setBusy, releaseBusy } from './watch'
 
 export const restoreGame = (fileList, prompt = true) => {
   if (!fileList || !fileList.length) {
@@ -28,6 +29,11 @@ export const restoreGame = (fileList, prompt = true) => {
 }
 
 export const restoreAll = config => {
+  if (getBusy()) {
+    return
+  }
+  setBusy()
+
   if (!config) {
     console.error('Invalid config, could not restore')
     return false
@@ -49,5 +55,7 @@ export const restoreAll = config => {
     console.log(`Restoring ${gameName}...`)
     restoreGame(fileList, true)
   }
+
+  releaseBusy()
   return true
 }

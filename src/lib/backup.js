@@ -1,5 +1,6 @@
 import fs from 'fs-extra'
 import { readFiles, copyFiles } from './files'
+import { getBusy, setBusy, releaseBusy } from './watch'
 
 export const backupGame = (fileList, prompt = true) => {
   if (!fileList || !fileList.length) {
@@ -28,6 +29,11 @@ export const backupGame = (fileList, prompt = true) => {
 }
 
 export const backupAll = config => {
+  if (getBusy()) {
+    return
+  }
+  setBusy()
+
   if (!config) {
     console.error('Invalid config, could not backup')
     return false
@@ -49,5 +55,7 @@ export const backupAll = config => {
     console.log(`Backing up ${gameName}...`)
     backupGame(fileList, true)
   }
+
+  releaseBusy()
   return true
 }
