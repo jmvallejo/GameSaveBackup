@@ -30,19 +30,23 @@ const watchGame = (gameName, game) => {
     const { sourcePath, destPath } = currentFilesInfo || {}
     if (sourcePath && fs.existsSync(sourcePath)) {
       fs.watch(sourcePath, { recursive: true }, (eventType, filename) => {
-        console.log(`${gameName}: ${eventType} ${filename}`)
         if (!getBusy()) {
           setBusy()
-          backupGame(fileList, false)
-          releaseBusy()
+          console.log(`${gameName} save folder: ${eventType} ${filename}`)
+          setTimeout(() => {
+            backupGame(fileList, false)
+            releaseBusy()
+          }, WATCH_BUSY_TIMEOUT)
         }
       })
       fs.watch(destPath, { recursive: true }, (eventType, filename) => {
-        console.log(`${gameName}: ${eventType} ${filename}`)
         if (!getBusy()) {
           setBusy()
-          restoreGame(fileList, false)
-          releaseBusy()
+          console.log(`${gameName} backup folder: ${eventType} ${filename}`)
+          setTimeout(() => {
+            restoreGame(fileList, false)
+            releaseBusy()
+          }, WATCH_BUSY_TIMEOUT)
         }
       })
     }
