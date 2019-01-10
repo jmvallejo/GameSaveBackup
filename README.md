@@ -67,4 +67,4 @@ You can use any console pattern (not regex)
 * Connecting to different storage services for backing up files.
 
 ## Contributing
-* Feel free to create a PR and let me know what it is about.
+* Feel free to create a PR and let me know what it is about...
